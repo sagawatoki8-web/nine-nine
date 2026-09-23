@@ -516,7 +516,7 @@ box-shadow:0 0 55px #49dd7950}
       <img class="logo" src="asset_001_343265703a3d1362.svg" alt="NINE NINE 9時9分ロゴ">
       <p class="eyebrow">オリジナルカードバトル</p>
       <h1>NINE NINE</h1>
-      <p class="sub">Ver.0.43 即死級K.O.演出 表示修正版</p>
+      <p class="sub">Ver.0.44 C109コピー処理フリーズ修正</p>
       <div class="difficulty-wrap" aria-label="CPU難易度">
         <div class="difficulty-title"><span>CPU難易度</span><small id="difficultyHelp">基本的な状況判断・弱め</small></div>
         <div class="difficulty-grid" id="difficultyGrid">
@@ -1011,7 +1011,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
   let cpuTimer = 0;
   let cpuRecoveryTimer = 0;
   const STORAGE_SAVE='nine_nine_match_v1';
-  const APP_VERSION='0.43';
+  const APP_VERSION='0.44';
   const STORAGE_STATS='nine_nine_stats_v1';
   const STORAGE_AUDIO='nine_nine_audio_v2';
   const STORAGE_UI='nine_nine_ui_v1';
@@ -1687,7 +1687,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     if(!verifyPhysicalUniqueness()) throw new Error('初期配布後のカード重複検査に失敗しました。');
     const first = rollFirst();
     log(`完成済み160枚からランダム100枚を採用し、重複なしで50枚ずつ配布。残り60枚は不採用。初期手札5枚。${sideName(first)}が先攻。`);
-    log(`Ver.0.43：CPU難易度「${difficultyName(game.difficulty)}」。50以上のK.O.級演出を最前面表示へ修正。`);
+    log(`Ver.0.44：CPU難易度「${difficultyName(game.difficulty)}」。C109の複数効果コピー完了処理を修正。`);
     els.startScreen.classList.add('hidden'); els.gameScreen.classList.remove('hidden');
     render();
     beginTurn(first);
@@ -3958,7 +3958,17 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
         case 'C107':hit(12,'ヘッショ',true);return finish();
         case 'C108':if(index===0){game[foe].immobileTurns=(game[foe].immobileTurns||0)+1;log(`睡魔：${sideName(foe)}は次の1回の実ターンでカード使用不可。`);}else heal(foe,4,'快眠');return finish();
         case 'C109':
-          if(index===0){const copied=game[foe].lastUsedCardId;if(!copied){log('画像解析：前の相手ターンに使用カードなし。不発。');return finish();}if(copied==='C109'){log('画像解析：C109同士の無限コピーを防止し不発。');return finish();}log(`画像解析：${copied}「${byId.get(copied)?.name||''}」をコピー。`);queueCardReveal([copied],'画像解析：コピー対象','このカードの効果として発動。','C109');return afterSteps(()=>runUnifiedCardSequence(side,copied,{copiedBy:'C109'},()=>withCardSource(side,id,()=>finish())));}
+          if(index===0){
+            const copied=game[foe].lastUsedCardId;
+            if(!copied){log('画像解析：前の相手ターンに使用カードなし。不発。');return finish();}
+            if(copied==='C109'){log('画像解析：C109同士の無限コピーを防止し不発。');return finish();}
+            log(`画像解析：${copied}「${byId.get(copied)?.name||''}」をコピー。`);
+            queueCardReveal([copied],'画像解析：コピー対象','このカードの効果として発動。','C109');
+            return afterSteps(()=>runUnifiedCardSequence(side,copied,{
+              chained:true,
+              onComplete:()=>withCardSource(side,id,()=>finish())
+            }));
+          }
           maxDelta(side,-10,'名誉毀損　懲役3年以下');return finish();
         case 'C110':if(index===0)maxDelta(side,10,'東京生まれHIPHOP育ち');else{addStatus(side,'incomingZero','悪そうな奴は大体友達：ダメージ0',0,'buff',{expireAtSideStart:side,source:side});const n=draw(side,2,side==='player');log(`悪そうな奴は大体友達：${n}枚ドロー。`);}return finish();
         case 'C111':
@@ -5041,7 +5051,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       // Existing staged engine has per-index execution for complex cards.
       return runEffectIndexSequence(side,cid,[0],{copied:true},()=>{});
     }
-    runUnifiedCardSequence(side,cid,{copied:true},()=>{});
+    runUnifiedCardSequence(side,cid,{chained:true,onComplete:()=>{}});
   }
   function resolveV04(side,id,ctx={}) {
     const foe=other(side), me=game[side], op=game[foe];
