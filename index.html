@@ -49,6 +49,7 @@ button{font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
 @keyframes nnFatalShake{0%,100%{transform:translate(0)}8%{transform:translate(-16px,8px) rotate(-.4deg)}16%{transform:translate(15px,-9px) rotate(.4deg)}27%{transform:translate(-13px,-7px)}39%{transform:translate(12px,8px)}52%{transform:translate(-10px,4px)}68%{transform:translate(8px,-4px)}84%{transform:translate(-4px,2px)}}
 @keyframes nnFatalValue{0%{opacity:0;transform:scale(2.4) rotate(-5deg);filter:blur(10px)}24%{opacity:1;transform:scale(.82) rotate(2deg);filter:none}45%{transform:scale(1.25) rotate(-1deg)}70%{transform:scale(.96)}100%{transform:scale(1)}}
 .game-screen.fatal-hit-flash::before{content:"";position:fixed;inset:0;z-index:9997;pointer-events:none;background:radial-gradient(circle at center,#fff 0 5%,#ff1938 18%,#460008 48%,#000 82%);mix-blend-mode:screen;animation:nnFatalFlash .95s ease-out both}.game-screen.fatal-hit-flash::after{content:"K.O.級";position:fixed;inset:0;z-index:9998;display:grid;place-items:center;pointer-events:none;color:#fff;font:1000 clamp(68px,23vw,150px)/1 Georgia,serif;letter-spacing:.05em;text-shadow:0 0 12px #fff,0 0 35px #ff001c,8px 8px 0 #55000b;animation:nnFatalStamp .95s ease-out both}
+.game-screen.piercing-hit-flash::before{content:"";position:fixed;inset:-20%;z-index:9997;pointer-events:none;background:repeating-linear-gradient(112deg,#0000 0 42%,#fff 43% 44%,#53d9ff 45% 47%,#0000 48% 55%);filter:drop-shadow(0 0 16px #71e9ff);animation:nnPierceSlash .62s cubic-bezier(.15,.8,.25,1) both}.game-screen.piercing-hit-flash::after{content:"貫 通";position:fixed;inset:0;z-index:9998;display:grid;place-items:center;pointer-events:none;color:#eaffff;font:1000 clamp(62px,21vw,142px)/1 serif;letter-spacing:.18em;text-shadow:0 0 8px #fff,0 0 28px #30ccff,6px 7px 0 #064b72;animation:nnPierceStamp .62s ease-out both}@keyframes nnPierceSlash{0%{opacity:0;transform:translate(-45%,-20%) rotate(-8deg) scale(.7)}28%{opacity:1}100%{opacity:0;transform:translate(38%,18%) rotate(-8deg) scale(1.2)}}@keyframes nnPierceStamp{0%{opacity:0;transform:scale(2.2) rotate(-7deg)}35%{opacity:1;transform:scale(.92) rotate(-3deg)}100%{opacity:0;transform:scale(1.12) rotate(0)}}
 @keyframes nnFatalFlash{0%{opacity:0}8%{opacity:1}17%{opacity:.05}26%{opacity:1}48%{opacity:.48}100%{opacity:0}}@keyframes nnFatalStamp{0%{opacity:0;transform:scale(3.2) rotate(-8deg)}24%{opacity:1;transform:scale(.82) rotate(2deg)}45%{transform:scale(1.08) rotate(-1deg)}72%{opacity:1}100%{opacity:0;transform:scale(1.18)}}
 #battleLog li.calc-log{cursor:pointer;border-left:2px solid #424957;padding-left:7px}
 #battleLog li.calc-log::after{content:"  ▸";color:#777f91}
@@ -518,7 +519,7 @@ box-shadow:0 0 55px #49dd7950}
       <img class="logo" src="asset_001_343265703a3d1362.svg" alt="NINE NINE 9時9分ロゴ">
       <p class="eyebrow">オリジナルカードバトル</p>
       <h1>NINE NINE</h1>
-      <p class="sub">Ver.0.54 C191〜C200追加・効果完全対応</p>
+      <p class="sub">Ver.0.55 C201〜C220追加・貫通専用演出</p>
       <div class="difficulty-wrap" aria-label="CPU難易度">
         <div class="difficulty-title"><span>CPU難易度</span><small id="difficultyHelp">基本的な状況判断・弱め</small></div>
         <div class="difficulty-grid" id="difficultyGrid">
@@ -533,7 +534,7 @@ box-shadow:0 0 55px #49dd7950}
       <button id="rulesBtn" class="ghost">基本ルール</button>
       <div class="catalog-panel">
         <h3>📚 カード図鑑</h3>
-        <p>C001〜C200を横3列で一覧表示。カード番号で検索し、詳細確認やカードテストができます。</p>
+        <p>C001〜C220を横3列で一覧表示。番号帯・カード番号で検索し、詳細確認やカードテストができます。</p>
         <button id="catalogOpenBtn" type="button" class="catalog-open">カード図鑑を開く</button>
       </div>
       <div class="home-tools">
@@ -570,7 +571,7 @@ box-shadow:0 0 55px #49dd7950}
         </div>
         <div id="recordByDiff" class="record-by-diff">まだ対戦記録はありません。</div>
       </div>
-      <p class="build-note">C001〜C200を収録。毎試合200枚からランダム100枚だけを採用し、あなた50枚・CPU50枚へ重複なしで配布。残り100枚は不採用。</p>
+      <p class="build-note">C001〜C220を収録。毎試合220枚からランダム100枚だけを採用し、あなた50枚・CPU50枚へ重複なしで配布。残り120枚は不採用。</p>
     </section>
 
     <section id="gameScreen" class="screen game-screen hidden" aria-live="polite">
@@ -805,6 +806,7 @@ box-shadow:0 0 55px #49dd7950}
         </div>
         <div id="catalogFilters" class="catalog-filters" aria-label="カード絞り込み">
           <button type="button" class="catalog-filter active" data-catalog-filter="all">すべて</button>
+          <button type="button" class="catalog-filter" data-catalog-filter="range1">1〜100</button><button type="button" class="catalog-filter" data-catalog-filter="range2">101〜200</button><button type="button" class="catalog-filter" data-catalog-filter="range3">201〜300</button>
           <button type="button" class="catalog-filter" data-catalog-filter="star1">⭐1</button><button type="button" class="catalog-filter" data-catalog-filter="star2">⭐2</button><button type="button" class="catalog-filter" data-catalog-filter="star3">⭐3</button><button type="button" class="catalog-filter" data-catalog-filter="star4">⭐4</button><button type="button" class="catalog-filter" data-catalog-filter="star5">⭐5</button>
           <button type="button" class="catalog-filter" data-catalog-filter="attack">⚔️ 攻撃</button><button type="button" class="catalog-filter" data-catalog-filter="heal">💚 回復</button><button type="button" class="catalog-filter" data-catalog-filter="lifeCap">❤️ 上限変更</button><button type="button" class="catalog-filter" data-catalog-filter="buff">▲ バフ</button><button type="button" class="catalog-filter" data-catalog-filter="debuff">▼ デバフ</button><button type="button" class="catalog-filter" data-catalog-filter="dice">🎲 サイコロ</button><button type="button" class="catalog-filter" data-catalog-filter="permanent">♾️ 永続</button>
         </div>
@@ -849,7 +851,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
 {"id":"C009","name":"キティ・ホワイト","rarity":1,"rarityText":"⭐","activation":"すべて発動","effects":["りんご3個分の体重。相手は手札から⭐⭐⭐のカードを2枚捨てる。2枚に満たない場合、可能な枚数だけ捨てる。その後、相手はこの効果で捨てたカードと同じ枚数だけ山札から引く。"],"memo":"","image":"asset_011_ac64ebe4fd439a5d.jpg"},
 {"id":"C010","name":"織田信長","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["楽市楽座。自分のバフ・デバフ、相手のバフ・デバフをすべて解除する。","安土城。次の自分のターン開始まで、自分が受けるダメージを半減する。","実力主義。相手は次のターン、手札から最もレアリティの高いカードを使用しなければならない。"],"memo":"","image":"C010.jpeg"},
 {"id":"C011","name":"ビスケット・オリバ","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["1日10万キロカロリー。自分のライフ上限を10増やす。","パックマン。相手の次のターンをスキップする。"],"memo":"","image":"asset_013_64fa2b0fc042daa9.jpg"},
-{"id":"C012","name":"サイタマ","rarity":5,"rarityText":"⭐⭐⭐⭐⭐","activation":"すべて発動","effects":["マジ殴り。貫通攻撃。相手に15ダメージを与える。"],"memo":"","image":"asset_014_ad7121b1c7dde772.jpg"},
+{"id":"C012","name":"サイタマ","rarity":5,"rarityText":"⭐⭐⭐⭐⭐","activation":"条件で1つ発動（現在ライフ15%以上→①、15%未満→②）","effects":["普通のパンチ。相手に15ダメージを与える。","マジ殴り。相手に20の貫通ダメージを与える。"],"memo":"マジ殴りは相手側の軽減・半減・無効・反射を無視する。","image":"C012.jpeg"},
 {"id":"C013","name":"花粉","rarity":1,"rarityText":"⭐","activation":"サイコロで1つ発動（1・2→①、3・4→②、5・6→③）","effects":["くしゃみ。相手の手札をランダムに1枚捨てる。その後、相手は山札から1枚引く。","鼻詰まり。相手は2ターンの間、⭐⭐⭐以下のカードしか使用できない。","目の痒み。相手に3ダメージを与える。"],"memo":"","image":"asset_015_a5be452c4d9a02a9.jpg"},
 {"id":"C014","name":"ドーピング","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["ステロイド。自分のライフ上限を15増やす。","興奮剤。自分のライフを15回復する。","副作用。自分の次のターンをスキップする。"],"memo":"","image":"asset_016_84870f27e5e82ff0.jpg"},
 {"id":"C015","name":"足りないトイレットペーパー","rarity":1,"rarityText":"⭐","activation":"すべて発動","effects":["足りない。自分に3の自傷ダメージを与える。","変えてくれ。相手の手札をすべて山札に戻し、山札をシャッフルする。その後、相手は山札から5枚引く。"],"memo":"","image":"asset_017_f8a980bc75245232.jpg"},
@@ -1037,7 +1039,27 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
 {"id":"C197","name":"売れてない屋台","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["かわいそう。自分の手札からカードを1枚選び、相手の手札に加える。その後、相手の手札からカードをランダムに1枚選び、自分の手札に加える。"],"memo":"","image":"C197.jpeg"},
 {"id":"C198","name":"キティぬいぐるみ","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["クレーンゲームのプロ。相手の山札からカードをランダムに2枚選び、自分の手札に加える。"],"memo":"","image":"C198.jpeg"},
 {"id":"C199","name":"キティぬいぐるみ2","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["クレーンゲーム再び。自分の山札からカードをランダムに2枚選び、自分の手札に加える。"],"memo":"","image":"C199.jpeg"},
-{"id":"C200","name":"初めての愛飯","rarity":5,"rarityText":"⭐⭐⭐⭐⭐","activation":"すべて発動","effects":["血沸き肉踊る。自分のライフを20回復する。その後、次の自分のターン終了時まで、自分が相手に与えるすべてのダメージを1.2倍にする。","思い出の味。このカードを使用した後からゲーム終了まで、自分が相手から受けるすべてのダメージを20％減らす。"],"memo":"","image":"C200.jpeg"}];
+{"id":"C200","name":"初めての愛飯","rarity":5,"rarityText":"⭐⭐⭐⭐⭐","activation":"すべて発動","effects":["血沸き肉踊る。自分のライフを20回復する。その後、次の自分のターン終了時まで、自分が相手に与えるすべてのダメージを1.2倍にする。","思い出の味。このカードを使用した後からゲーム終了まで、自分が相手から受けるすべてのダメージを20％減らす。"],"memo":"","image":"C200.jpeg"},
+{"id":"C201","name":"チェンソーマン（デンジ）","rarity":5,"rarityText":"⭐⭐⭐⭐⭐","activation":"効果①→効果②（出目1〜5で繰り返し、6で終了）","effects":["切り裂き。相手に2の貫通ダメージを与える。","永久機関。サイコロを1回振る。1〜5なら効果①から再発動し、6なら終了する。"],"memo":"安全上限50回。","image":"C201.jpeg"},
+{"id":"C202","name":"ポチタ","rarity":2,"rarityText":"⭐⭐","activation":"すべて発動","effects":["契約。自分のライフを4回復する。その後、自分が次に与えるダメージを1.2倍にする。"],"memo":"","image":"C202.jpeg"},
+{"id":"C203","name":"パワー","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["血の武器。自分に3の自傷ダメージを与え、相手に8ダメージを与える。","ワシのじゃ！。相手の手札からランダムに1枚を自分の手札に加える。"],"memo":"","image":"C203.jpeg"},
+{"id":"C204","name":"レゼ","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["爆弾の悪魔。相手に8ダメージを与え、その後、自分に3の自傷ダメージを与える。","ボンッ。サイコロを1回振る。5・6なら相手に10の貫通ダメージを与え、1〜4なら何も起こらない。"],"memo":"","image":"C204.jpeg"},
+{"id":"C205","name":"東山コベニ","rarity":3,"rarityText":"⭐⭐⭐","activation":"効果①の判定成功時のみ効果②を発動","effects":["もう嫌ぁぁぁ!!。サイコロを1回振る。1〜3なら自分に3の自傷ダメージを与えて効果②へ進み、4〜6なら何も起こらず終了する。","契約している悪魔は秘密です。サイコロを1回振る。1〜4なら相手に4ダメージ、5・6なら相手に12ダメージを与える。"],"memo":"","image":"C205.jpeg"},
+{"id":"C206","name":"マキマ","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["支配の悪魔。相手がサイコロを1回振る。1〜3なら相手は次の1回の自分のターンに動けず、4〜6なら何も起こらない。","不死身の契約。このカードの使用時から自分の2回目のターン終了時まで、自分が受けるダメージを0にする。ダメージを無効にするたび、自分の山札の一番上を1枚捨てる。"],"memo":"貫通・自傷は無効化しない。","image":"C206.jpeg"},
+{"id":"C207","name":"闇の悪魔","rarity":5,"rarityText":"⭐⭐⭐⭐⭐","activation":"すべて発動","effects":["超越者。相手のバフをすべて解除する。その後、このゲーム中、相手が受けるダメージを1.2倍にする。","闇。相手は次の1回の自分のターン終了時までライフを回復できない。","視線や言葉による不可視の攻撃。相手がサイコロを1回振る。1〜3なら10の貫通ダメージ。4・5なら7の貫通ダメージを与え、相手の手札をランダムに1枚ゲームから除外。6なら相手の現在ライフを半分にする。"],"memo":"","image":"C207.jpeg"},
+{"id":"C208","name":"鋼の錬金術師 エドワード・エルリック","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["機械鎧オートメイル。次に自分が受けるダメージを1回だけ半減する。","等価交換。自分の手札から⭐1〜4を1枚捨てる。その後、自分の捨て札から、そのカードよりレアリティがちょうど1高いカードを1枚選んで手札に加える。"],"memo":"","image":"C208.jpeg"},
+{"id":"C209","name":"ホムンクルス 色欲 ラスト","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["あら、いい眼になった。相手に7の貫通ダメージを与える。"],"memo":"","image":"C209.jpeg"},
+{"id":"C210","name":"ホムンクルス 暴食 グラトニー","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["喰らう。相手の山札からランダムに5枚を相手の捨て札へ送る。","擬似真理の扉。相手の次のターン終了時まで、自分が相手から受けた実ダメージの1.5倍を相手に反射する。"],"memo":"","image":"C210.jpeg"},
+{"id":"C211","name":"ホムンクルス 嫉妬 エンヴィー","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["変身。相手が前のターンに使用したカードの効果①をコピーして発動する。","正体解放。相手に4ダメージを与える。"],"memo":"コピー循環は安全停止する。","image":"C211.jpeg"},
+{"id":"C212","name":"ホムンクルス 強欲 グリード","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["最強の盾。このカードの使用時から次の自分のターン開始まで、自分が受けるダメージを0にする。","ありえないなんて事はありえない。相手の山札からランダムに1枚を自分の手札に加える。"],"memo":"貫通・自傷は無効化しない。","image":"C212.jpeg"},
+{"id":"C213","name":"ホムンクルス 怠惰 スロウス","rarity":3,"rarityText":"⭐⭐⭐","activation":"すべて発動","effects":["最高速のタックル。相手に11ダメージを与える。","めんどくせぇ。自分は次の1回の自分のターンに動けない。"],"memo":"","image":"C213.jpeg"},
+{"id":"C214","name":"ホムンクルス 憤怒 キング・ブラッドレイ","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["最強の眼。相手は次のターン、手札にある最もレアリティの低いカードしか使用できない。","超速の剣技。サイコロを2回振り、出た目の合計×1.2のダメージを相手に与える。"],"memo":"","image":"C214.jpeg"},
+{"id":"C215","name":"ホムンクルス 傲慢 セリム・ブラッドレイ","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["影の触手。相手に5ダメージを与える。その後、相手は次のターン、⭐4・⭐5のカードを使用できない。","喰らい取り込む。相手の捨て札からランダムに1枚を選び、そのカードのすべての効果をコピーして発動する。"],"memo":"コピー循環は安全停止する。","image":"C215.jpeg"},
+{"id":"C216","name":"災害レベル竜 黒い精子","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"サイコロで1つ発動（1・2→①、3・4→②、5・6→③）","effects":["多細胞精子。相手に4ダメージ。次の自分のターン開始まで、自分が受けるダメージを20％減らす。","黄金精子。相手に7ダメージ。次の自分のターン開始まで、自分が受けるダメージを50％減らす。","白金精子。相手に12ダメージ。次の自分のターン開始まで、自分が受けるダメージを90％減らす。"],"memo":"","image":"C216.jpeg"},
+{"id":"C217","name":"災害レベル竜 ホームレス帝","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"効果①→効果②（出目1で繰り返し、2〜6で終了）","effects":["光の玉。サイコロを2回振り、出た目の合計と同じダメージを相手に与える。","無制限の神通力。サイコロを1回振る。1なら効果①から再発動し、2〜6なら終了する。"],"memo":"安全上限50回。","image":"C217.jpeg"},
+{"id":"C218","name":"無免ライダー","rarity":2,"rarityText":"⭐⭐","activation":"すべて発動","effects":["正義の自転車乗り。相手に3ダメージを与える。","ここで俺がやらなくちゃ。現在ライフが10以下なら、次に自分が受けるダメージを1回だけ0にする。11以上なら何も起こらない。"],"memo":"","image":"C218.jpeg"},
+{"id":"C219","name":"S級ヒーロー 超合金クロビカリ","rarity":4,"rarityText":"⭐⭐⭐⭐","activation":"すべて発動","effects":["セイ☆。相手に6ダメージを与える。","言っただろう 無謀だと。このカードの使用時から次の自分のターン開始まで、自分が受けるダメージを70％減らす。"],"memo":"","image":"C219.jpeg"},
+{"id":"C220","name":"覚醒ガロウ","rarity":5,"rarityText":"⭐⭐⭐⭐⭐","activation":"すべて発動","effects":["怪害神殺拳。相手に10ダメージを与える。","極発勁。効果②の発動時に相手の手札枚数を数え、その枚数と同じ貫通ダメージを相手に与える。"],"memo":"","image":"C220.jpeg"}];
 
 </script>
   <script>
@@ -1732,7 +1754,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       life:30, max:30, deck, hand:[], discard:[], active:null, effects:[], newCard:null,
       lastTurnDamageTaken:0, incomingThisTurn:0, lastCompletedTurnSerial:0, skipTurns:0,
       healAfterSkip:false, healAtNextActual:false,
-      drawnThisTurn:[], forceHighestNext:false, forceRandomNext:false, forcedRandomId:null, forceAllNext:false, forceAllIdsThisTurn:[], faceUpTop:null,
+      drawnThisTurn:[], forceHighestNext:false, forceLowestNext:false, forceRandomNext:false, forcedRandomId:null, forceAllNext:false, forceAllIdsThisTurn:[], faceUpTop:null,
       forceChosenNext:null, mirrorRandomNext:false, invertTargetsNext:false, immobileTurns:0,
       effectActivationsThisTurn:0,
       extraTurns:0, damageDealtThisTurn:0, lastOwnTurnDamageDealt:0
@@ -1754,8 +1776,8 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     repairPhysicalDuplicates('初期配布後');
     if(!verifyPhysicalUniqueness()) throw new Error('初期配布後のカード重複検査に失敗しました。');
     const first = rollFirst();
-    log(`完成済み200枚からランダム100枚を採用し、重複なしで50枚ずつ配布。残り100枚は不採用。初期手札5枚。${sideName(first)}が先攻。`);
-    log(`Ver.0.54：CPU難易度「${difficultyName(game.difficulty)}」。C191〜C200専用効果・永続処理・コピー経路を追加。`);
+    log(`完成済み220枚からランダム100枚を採用し、重複なしで50枚ずつ配布。残り120枚は不採用。初期手札5枚。${sideName(first)}が先攻。`);
+    log(`Ver.0.55：CPU難易度「${difficultyName(game.difficulty)}」。C201〜C220・C012改訂・貫通専用演出を追加。`);
     els.startScreen.classList.add('hidden'); els.gameScreen.classList.remove('hidden');
     render();
     beginTurn(first);
@@ -1930,6 +1952,10 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       const maxR=Math.max(...ids.map(id=>byId.get(id)?.rarity||0));
       ids=ids.filter(id=>(byId.get(id)?.rarity||0)===maxR);
     }
+    if(p.forceLowestNext && ids.length) {
+      const minR=Math.min(...ids.map(id=>byId.get(id)?.rarity||0));
+      ids=ids.filter(id=>(byId.get(id)?.rarity||0)===minR);
+    }
 
     const cap=activeRarityCap(side);
     if(cap!=null && ids.length) {
@@ -1947,6 +1973,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     if(forced)return `${forced}「${byId.get(forced)?.name||''}」を強制使用`;
     if(p.forceRandomNext && p.forcedRandomId) return `強制使用：${p.forcedRandomId}`;
     if(p.forceHighestNext) return '最高レアリティを使用';
+    if(p.forceLowestNext) return '最低レアリティを使用';
     const cap=activeRarityCap(side);
     if(cap!=null) return `⭐${cap}以下のみ使用可能`;
     return '';
@@ -1955,6 +1982,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
   function consumeNormalUseRestrictions(side) {
     const p=game[side];
     if(p.forceHighestNext) { p.forceHighestNext=false; log(`${sideName(side)}：最高レアリティ強制を消費。`); }
+    if(p.forceLowestNext) { p.forceLowestNext=false; log(`${sideName(side)}：最低レアリティ強制を消費。`); }
     if(p.forceRandomNext) { p.forceRandomNext=false; p.forcedRandomId=null; log(`${sideName(side)}：ランダム強制使用を消費。`); }
   }
 
@@ -2160,6 +2188,12 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
         els.gameScreen.classList.add('big-hit-flash');
         setTimeout(()=>els.gameScreen.classList.remove('big-hit-flash'),tempoMs(650));
       }
+      if(piercing){
+        els.gameScreen.classList.remove('piercing-hit-flash');
+        void els.gameScreen.offsetWidth;
+        els.gameScreen.classList.add('piercing-hit-flash');
+        setTimeout(()=>els.gameScreen.classList.remove('piercing-hit-flash'),tempoMs(760));
+      }
     }else if(big){
       els.gameScreen.classList.remove('big-heal-flash');
       void els.gameScreen.offsetWidth;
@@ -2253,7 +2287,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     return parts.slice(0,5).join(' / ');
   }
 
-  const TURN_CONTROL_PRIORITY=['skipTurns','immobileTurns','alternateImmobile','forceChosenNext','forceAllNext','forceRandomNext','forceHighestNext'];
+  const TURN_CONTROL_PRIORITY=['skipTurns','immobileTurns','alternateImmobile','forceChosenNext','forceAllNext','forceRandomNext','forceHighestNext','forceLowestNext'];
   function turnControlState(side){
     const p=game?.[side];if(!p)return 'normal';
     if((p.skipTurns||0)>0)return 'skipTurns';
@@ -2263,6 +2297,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     if(p.forceAllNext)return 'forceAllNext';
     if(p.forceRandomNext)return 'forceRandomNext';
     if(p.forceHighestNext)return 'forceHighestNext';
+    if(p.forceLowestNext)return 'forceLowestNext';
     return 'normal';
   }
 
@@ -2445,6 +2480,11 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     const me=game.cpu,op=game.player;
     const attack=(n,piercing=false)=>estimateDamagePure('cpu','player',n,{piercing});
     switch(id){
+      case 'C012':{
+        const me=game[side],threshold=me.max*0.15,i=me.life>=threshold?0:1;
+        queueDecisionResult(side,id,'現在ライフ判定',i===0?'効果①「普通のパンチ」':'効果②「マジ殴り」',`${fmt(me.life)} / ${fmt(me.max)}（15％=${fmt(threshold)}）`,()=>onChosen(i));
+        return true;
+      }
       case 'C007':return attack(5);
       case 'C012':return attack(15,true);
       case 'C013':return attack(3)/3;
@@ -2879,6 +2919,26 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       case 'C198':return Math.min(2,op.deck.length)*5;
       case 'C199':return Math.min(2,me.deck.length)*4;
       case 'C200':return Math.min(missing,20)*1.4+20;
+      case 'C201':return attack(12,true)+8;
+      case 'C202':return Math.min(missing,4)*1.3+7;
+      case 'C203':return attack(8)+(op.hand.length?7:0)-(hp<=3?20:3);
+      case 'C204':return attack(13,true)-(hp<=3?18:3);
+      case 'C205':return attack(4)+2;
+      case 'C206':return 21+(hp<=10?10:0);
+      case 'C207':return attack(9,true)+oppBuffs*5+20;
+      case 'C208':return 12+(me.hand.some(cid=>(byId.get(cid)?.rarity||9)<=4)?5:0);
+      case 'C209':return attack(7,true)+4;
+      case 'C210':return Math.min(5,op.deck.length)*1.2+10;
+      case 'C211':return op.lastUsedCardId?13:attack(4);
+      case 'C212':return 14+(op.deck.length?5:0);
+      case 'C213':return attack(11)-5;
+      case 'C214':return attack(8.4)+10;
+      case 'C215':return attack(5)+(op.discard.length?14:5);
+      case 'C216':return attack(7.7)+11;
+      case 'C217':return attack(8)+7;
+      case 'C218':return attack(3)+(hp<=10?12:0);
+      case 'C219':return attack(6)+13;
+      case 'C220':return attack(10)+attack(op.hand.length,true)+7;
       case 'C100':{
         const stars=cpuPublicOpponentRaritySum();
         score+=stars*1.4;if(ohp<=stars)score+=60;if(hp<=12)score+=8;break;
@@ -3584,6 +3644,11 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
         dieBranch([d],i,i===0?'効果①「ファンサービス」':'効果②「目に毒」',`出目${d}で決定`,{roll:d});
         return true;
       }
+      case 'C216':{
+        const d=rollDie(),i=d<=2?0:d<=4?1:2;
+        dieBranch([d],i,['効果①「多細胞精子」','効果②「黄金精子」','効果③「白金精子」'][i],`出目${d}で決定`,{roll:d});
+        return true;
+      }
       case 'C095':{
         const me=game[side],op=game[foe];
         const i=me.life>op.life?0:me.life<op.life?1:2;
@@ -3737,6 +3802,9 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
           if(index===0){clearStatuses(side,'all');clearStatuses(foe,'all');}
           else if(index===1)addStatus(side,'incomingMult','安土城：受ダメ半減',0.5,'buff',{expireAtSideStart:side,source:side});
           else {game[foe].forceHighestNext=true;log(`実力主義：${sideName(foe)}は次の実ターン、最高レアリティカードを使用。`);}
+          return finish();
+        case 'C012':
+          if(index===0)hit(15,'普通のパンチ');else hit(20,'マジ殴り',true);
           return finish();
 
         case 'C011':
@@ -4666,6 +4734,77 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
           }else addStatus(side,'incomingMult','思い出の味：受ダメ20％減',0.8,'buff',{source:side,permanent:true});
           return finish();
 
+        case 'C201':
+          if(index===0){hit(2,'切り裂き',true);return finish();}
+          ctx.c201Count=(ctx.c201Count||0)+1;
+          return rollStageDie(side,id,{title:'効果② 永久機関',label:'永久機関',outcomeName:d=>d<=5?'効果①から再発動':'終了',outcomeDetail:d=>`出目${d}`,onResolved:d=>{
+            if(d<=5&&ctx.c201Count<50){log(`永久機関：出目${d}、切り裂きから繰り返す（${ctx.c201Count+1}周目）。`);return executeStagedEffect(side,id,0,ctx,()=>executeStagedEffect(side,id,1,ctx,done));}
+            if(ctx.c201Count>=50)log('永久機関：安全上限50回で終了。');
+            finish();
+          }});
+        case 'C202':
+          recover(4,'契約');if(!game.winner)addStatus(side,'outgoingMult','契約：次の1回与ダメ×1.2',1.2,'buff',{source:side,oneShot:true});return finish();
+        case 'C203':
+          if(index===0){selfDamage(side,3,'血の武器');if(!game.winner)hit(8,'血の武器');return finish();}
+          if(op.hand.length){const stolen=op.hand.splice(randInt(op.hand.length),1)[0];me.hand.push(stolen);queueCardReveal([stolen],'ワシのじゃ！で奪ったカード',`${sideName(side)}の手札に加わりました。`,'C203 パワー');log(`ワシのじゃ！：${stolen}を相手の手札から獲得。`);}else log('ワシのじゃ！：相手の手札がないため不発。');
+          return finish();
+        case 'C204':
+          if(index===0){hit(8,'爆弾の悪魔');if(!game.winner)selfDamage(side,3,'爆弾の悪魔');return finish();}
+          return rollStageDie(side,id,{title:'効果② ボンッ',label:'ボンッ',outcomeName:d=>d>=5?'10貫通ダメージ':'不発',outcomeDetail:d=>`出目${d}`,onResolved:d=>withCardSource(side,id,()=>{if(d>=5)hit(10,'ボンッ',true);else log('ボンッ：出目1〜4のため不発。');finish();})});
+        case 'C205':
+          if(index===0)return rollStageDie(side,id,{title:'効果① もう嫌ぁぁぁ!!',label:'もう嫌ぁぁぁ!!',outcomeName:d=>d<=3?'自傷3・効果②へ':'何も起こらず終了',outcomeDetail:d=>`出目${d}`,onResolved:d=>withCardSource(side,id,()=>{ctx.c205Continue=d<=3;if(ctx.c205Continue)selfDamage(side,3,'もう嫌ぁぁぁ!!');else log('もう嫌ぁぁぁ!!：効果②は発動しない。');finish();})});
+          if(!ctx.c205Continue){log('契約している悪魔は秘密です：効果①が不発のため発動しない。');return finish();}
+          return rollStageDie(side,id,{title:'効果② 秘密の悪魔',label:'契約している悪魔は秘密です',outcomeName:d=>d<=4?'4ダメージ':'12ダメージ',outcomeDetail:d=>`出目${d}`,onResolved:d=>withCardSource(side,id,()=>{hit(d<=4?4:12,'契約している悪魔は秘密です');finish();})});
+        case 'C206':
+          if(index===0)return rollStageDie(side,id,{title:'効果① 支配の悪魔',label:'支配の悪魔',rollerSide:foe,outcomeName:d=>d<=3?'次のターン行動不能':'不発',outcomeDetail:d=>`出目${d}`,onResolved:d=>withCardSource(side,id,()=>{if(d<=3){op.immobileTurns=(op.immobileTurns||0)+1;log(`支配の悪魔：${sideName(foe)}は次の1回の実ターンで動けない。`);}else log('支配の悪魔：出目4〜6のため不発。');finish();})});
+          addStatus(side,'incomingZero','不死身の契約：ダメージ0',0,'buff',{source:side,permanent:true,expireAfterTurnEndSide:side,expireAfterOwnEnds:2});
+          addStatus(side,'zeroDamageDeckCost','不死身の契約：無効化時に山札1枚破棄',1,'buff',{source:side,permanent:true,expireAfterTurnEndSide:side,expireAfterOwnEnds:2});return finish();
+        case 'C207':
+          if(index===0){const n=op.effects.filter(e=>e.polarity==='buff').length;op.effects=op.effects.filter(e=>e.polarity!=='buff');log(`超越者：相手のバフ${n}件を解除。`);addStatus(foe,'incomingMult','超越者：受ダメ×1.2',1.2,'debuff',{source:side,permanent:true});return finish();}
+          if(index===1){nextTurn(foe,'healBlock','闇：回復不可',1,'debuff',{source:side});return finish();}
+          return rollStageDie(side,id,{title:'効果③ 不可視の攻撃',label:'視線や言葉による不可視の攻撃',rollerSide:foe,outcomeName:d=>d<=3?'10貫通ダメージ':d<=5?'7貫通＋手札除外':'現在ライフ半減',outcomeDetail:d=>`出目${d}`,onResolved:d=>withCardSource(side,id,()=>{
+            if(d<=3)hit(10,'不可視の攻撃',true);else if(d<=5){hit(7,'不可視の攻撃',true);if(!game.winner&&op.hand.length){const gone=op.hand.splice(randInt(op.hand.length),1)[0];game.removed.push(gone);queueCardReveal([gone],'闇に除外されたカード','ゲームから除外されました。','C207 闇の悪魔');log(`不可視の攻撃：${gone}をゲームから除外。`);}}else lifeSet(foe,op.life/2,'不可視の攻撃：現在ライフ半減');finish();
+          })});
+        case 'C208':
+          if(index===0){addStatus(side,'incomingMult','機械鎧：次の1回受ダメ半減',0.5,'buff',{source:side,oneShot:true});return finish();}
+          {
+            const eligible=me.hand.filter(cid=>{const r=byId.get(cid)?.rarity||0;return r>=1&&r<=4;});
+            if(!eligible.length){log('等価交換：捨てられる⭐1〜4がないため不発。');return finish();}
+            const afterDiscard=(given)=>{const r=byId.get(given)?.rarity||0;if(!discardFromHand(side,given,'等価交換'))return finish();const gains=me.discard.filter(cid=>cid!==given&&(byId.get(cid)?.rarity||0)===r+1);if(!gains.length){log(`等価交換：⭐${r+1}の捨て札がないため獲得なし。`);return finish();}const gain=(cid)=>{const at=me.discard.indexOf(cid);if(at>=0){me.discard.splice(at,1);me.hand.push(cid);queueCardReveal([cid],'等価交換で得たカード',`${cid}を手札に加えました。`,'C208 エドワード');log(`等価交換：${cid}を捨て札から手札へ。`);}finish();};if(side==='player')return selectCardsTap({kicker:'C208 等価交換',title:`⭐${r+1}の捨て札を1枚選択`,cardIds:gains,required:1,onConfirm:x=>gain(x[0])});gain(gains.sort((a,b)=>cpuDecisionScore(b,game.difficulty||'normal')-cpuDecisionScore(a,game.difficulty||'normal'))[0]);};
+            if(side==='player')return selectCardsTap({kicker:'C208 等価交換',title:'捨てる⭐1〜4カードを1枚選択',cardIds:eligible,required:1,onConfirm:x=>afterDiscard(x[0])});afterDiscard(eligible.sort((a,b)=>cpuDecisionScore(a,game.difficulty||'normal')-cpuDecisionScore(b,game.difficulty||'normal'))[0]);return;
+          }
+        case 'C209':hit(7,'あら、いい眼になった',true);return finish();
+        case 'C210':
+          if(index===0){const ids=[];for(let i=0;i<5&&op.deck.length;i++)ids.push(op.deck.splice(randInt(op.deck.length),1)[0]);op.discard.push(...ids);if(ids.length)queueCardReveal(ids,'喰らわれたカード',`${ids.length}枚が相手の捨て札へ。`,'C210 グラトニー');log(`喰らう：相手の山札から${ids.length}枚を捨て札へ。`);return finish();}
+          nextTurn(side,'reflect','擬似真理の扉：実ダメージ×1.5反射',1.5,'buff',{source:side,turnSide:foe});return finish();
+        case 'C211':
+          if(index===0){const copied=op.lastUsedCardId;if(!copied){log('変身：相手が前のターンに使用したカードがないため不発。');return finish();}game.copyStack=Array.isArray(game.copyStack)?game.copyStack:[];if(copied==='C211'||game.copyStack.includes(copied)||game.copyStack.length>=8){log('変身：コピー循環または深度上限を検出し、安全に不発。');return finish();}game.copyStack.push(copied);queueCardReveal([copied],'変身：コピーする効果①',`${copied}の効果①を発動。`,'C211 エンヴィー');return afterSteps(()=>runEffectIndexSequence(side,copied,[0],{copied:true},()=>withCardSource(side,id,()=>{game.copyStack.pop();finish();})));}
+          hit(4,'正体解放');return finish();
+        case 'C212':
+          if(index===0){addStatus(side,'incomingZero','最強の盾：ダメージ0',0,'buff',{expireAtSideStart:side,source:side});return finish();}
+          if(op.deck.length){const at=randInt(op.deck.length),stolen=op.deck.splice(at,1)[0];me.hand.push(stolen);queueCardReveal([stolen],'ありえないなんて事はありえない',`${sideName(side)}の手札に加わりました。`,'C212 グリード');log(`ありえないなんて事はありえない：${stolen}を相手の山札から獲得。`);}else log('ありえないなんて事はありえない：相手の山札がないため不発。');return finish();
+        case 'C213':
+          if(index===0){hit(11,'最高速のタックル');return finish();}me.immobileTurns=(me.immobileTurns||0)+1;log(`めんどくせぇ：${sideName(side)}は次の1回の実ターンで動けない。`);return finish();
+        case 'C214':
+          if(index===0){op.forceLowestNext=true;log(`最強の眼：${sideName(foe)}は次の実ターン、最低レアリティカードを使用。`);return finish();}
+          return rollStageTwoDice(side,id,{title:'効果② 超速の剣技',label:'超速の剣技',outcomeName:(a,b,sum)=>`${fmt(r1(sum*1.2))}ダメージ`,outcomeDetail:(a,b,sum)=>`合計${sum} × 1.2`,onResolved:(a,b,sum)=>withCardSource(side,id,()=>{hit(r1(sum*1.2),'超速の剣技');finish();})});
+        case 'C215':
+          if(index===0){hit(5,'影の触手');if(!game.winner)nextTurn(foe,'rarityCap','影の触手：⭐3以下のみ',3,'debuff',{source:side});return finish();}
+          if(!op.discard.length){log('喰らい取り込む：相手の捨て札がないため不発。');return finish();}
+          {const copied=op.discard[randInt(op.discard.length)];game.copyStack=Array.isArray(game.copyStack)?game.copyStack:[];if(copied==='C215'||game.copyStack.includes(copied)||game.copyStack.length>=8){log('喰らい取り込む：コピー循環または深度上限を検出し、安全に不発。');return finish();}game.copyStack.push(copied);queueCardReveal([copied],'喰らい取り込む：コピー対象',`${copied}の全効果を発動。`,'C215 セリム');return afterSteps(()=>runUnifiedCardSequence(side,copied,{chained:true,onComplete:()=>withCardSource(side,id,()=>{game.copyStack.pop();finish();})}));}
+        case 'C216':{
+          const amount=[4,7,12][index],mult=[0.8,0.5,0.1][index],names=['多細胞精子','黄金精子','白金精子'];hit(amount,names[index]);if(!game.winner)addStatus(side,'incomingMult',`${names[index]}：受ダメ${[20,50,90][index]}％減`,mult,'buff',{expireAtSideStart:side,source:side});return finish();
+        }
+        case 'C217':
+          if(index===0)return rollStageTwoDice(side,id,{title:'効果① 光の玉',label:'光の玉',outcomeName:(a,b,sum)=>`${sum}ダメージ`,outcomeDetail:(a,b,sum)=>`出目${a}＋${b}＝${sum}`,onResolved:(a,b,sum)=>withCardSource(side,id,()=>{hit(sum,'光の玉');finish();})});
+          ctx.c217Count=(ctx.c217Count||0)+1;return rollStageDie(side,id,{title:'効果② 無制限の神通力',label:'無制限の神通力',outcomeName:d=>d===1?'効果①から再発動':'終了',outcomeDetail:d=>`出目${d}`,onResolved:d=>{if(d===1&&ctx.c217Count<50){log(`無制限の神通力：光の玉から繰り返す（${ctx.c217Count+1}周目）。`);return executeStagedEffect(side,id,0,ctx,()=>executeStagedEffect(side,id,1,ctx,done));}if(ctx.c217Count>=50)log('無制限の神通力：安全上限50回で終了。');finish();}});
+        case 'C218':
+          if(index===0){hit(3,'正義の自転車乗り');return finish();}if(me.life<=10)addStatus(side,'incomingZero','ここで俺がやらなくちゃ：次の1回ダメージ0',0,'buff',{source:side,oneShot:true});else log(`ここで俺がやらなくちゃ：現在ライフ${fmt(me.life)}のため不発。`);return finish();
+        case 'C219':
+          if(index===0){hit(6,'セイ☆');return finish();}addStatus(side,'incomingMult','言っただろう 無謀だと：受ダメ70％減',0.3,'buff',{expireAtSideStart:side,source:side});return finish();
+        case 'C220':
+          if(index===0){hit(10,'怪害神殺拳');return finish();}hit(op.hand.length,'極発勁',true);return finish();
+
         default:
           // Single-effect / already atomic cards use the existing resolver,
           // but only after their one effect preview has been acknowledged.
@@ -4684,8 +4823,8 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     'C039','C041','C043','C044','C046','C047','C048','C050','C053','C054','C056','C059','C060',
     'C061','C062','C064','C065','C067','C068','C069','C070','C072','C073','C075','C077','C078',
     'C081','C085','C086','C087','C090','C092','C093','C095','C097','C099','C100'
-  ,'C101','C102','C104','C106','C108','C109','C110','C111','C112','C114','C117','C119','C120','C127','C129','C133','C135','C136','C139','C141','C142','C143','C144','C145','C146','C147','C148','C149','C150','C151','C152','C153','C154','C155','C156','C157','C158','C159','C160','C161','C162','C163','C164','C165','C166','C167','C168','C169','C170','C171','C172','C173','C174','C175','C176','C177','C178','C179','C180','C181','C182','C183','C184','C185','C186','C187','C188','C189','C190','C191','C192','C193','C194','C195','C196','C197','C198','C199','C200']);
-  const STAGED_SPECIAL_SINGLE_IDS=new Set(['C009','C019','C040','C088','C089','C103','C105','C107','C124','C125']);
+  ,'C101','C102','C104','C106','C108','C109','C110','C111','C112','C114','C117','C119','C120','C127','C129','C133','C135','C136','C139','C141','C142','C143','C144','C145','C146','C147','C148','C149','C150','C151','C152','C153','C154','C155','C156','C157','C158','C159','C160','C161','C162','C163','C164','C165','C166','C167','C168','C169','C170','C171','C172','C173','C174','C175','C176','C177','C178','C179','C180','C181','C182','C183','C184','C185','C186','C187','C188','C189','C190','C191','C192','C193','C194','C195','C196','C197','C198','C199','C200','C201','C202','C203','C204','C205','C206','C207','C208','C209','C210','C211','C212','C213','C214','C215','C216','C217','C218','C219','C220']);
+  const STAGED_SPECIAL_SINGLE_IDS=new Set(['C009','C012','C019','C040','C088','C089','C103','C105','C107','C124','C125']);
 
   function runEffectIndexSequence(side,id,indices,ctx,onComplete,pos=0){
     if(game.winner)return;
@@ -5357,6 +5496,10 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     const actual=calc.value;
     const calcText=`${label}\n計算内訳\n${calc.trace.join('\n')}`;
     if (!actual) {
+      if(!opts.piercing){
+        const cost=game[to].effects.find(e=>e.kind==='zeroDamageDeckCost'&&effectActive(e));
+        if(cost&&game[to].deck.length){const tossed=game[to].deck.shift();game[to].discard.push(tossed);queueCardReveal([tossed],'不死身の契約：山札コスト','ダメージ無効化の代わりに捨て札へ。','C206 マキマ');log(`不死身の契約：${tossed}を山札の上から捨てる。`);}
+      }
       if(game.metrics)game.metrics.zeroDamage=(game.metrics.zeroDamage||0)+1;
       log(`${label}：${sideName(to)}へのダメージは0。`,`${label}\n${calc.trace.join('\n')}`);
       render();
@@ -6354,13 +6497,13 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     const check=(name,pass,detail='')=>tests.push({name,pass:!!pass,detail:String(detail||'')});
     try{
       const ids=CARDS.map(c=>c.id),names=CARDS.map(c=>String(c.name||'').trim().toLowerCase());
-      check('カード200枚',CARDS.length===200,`${CARDS.length}枚`);
+      check('カード220枚',CARDS.length===220,`${CARDS.length}枚`);
       check('ID重複なし',new Set(ids).size===CARDS.length,`${new Set(ids).size}/${CARDS.length}`);
       check('カード名重複なし',new Set(names).size===CARDS.length,`${new Set(names).size}/${CARDS.length}`);
-      const expected=Array.from({length:200},(_,i)=>`C${String(i+1).padStart(3,'0')}`);
-      check('C001〜C200連番',expected.every(id=>byId.has(id)));
+      const expected=Array.from({length:220},(_,i)=>`C${String(i+1).padStart(3,'0')}`);
+      check('C001〜C220連番',expected.every(id=>byId.has(id)));
       check('レアリティ1〜5',CARDS.every(c=>Number.isInteger(c.rarity)&&c.rarity>=1&&c.rarity<=5));
-      check('カード画像200枚',CARDS.every(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))),`${CARDS.filter(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))).length}/200`);
+      check('カード画像220枚',CARDS.every(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))),`${CARDS.filter(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))).length}/220`);
 
       const stageSrc=executeStagedEffect.toString();
       const resolverSrc=resolveV04.toString();
@@ -6369,7 +6512,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       check('複数効果を全て段階処理',
         multiIds.every(id=>STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)||resolverCases.has(id)),
         `${multiIds.filter(id=>STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)||resolverCases.has(id)).length}/${multiIds.length}枚`);
-      check('C001〜C200 resolver/段階処理登録',expected.every(id=>resolverCases.has(id)||STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)),`${expected.filter(id=>resolverCases.has(id)||STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)).length}/200`);
+      check('C001〜C220 resolver/段階処理登録',expected.every(id=>resolverCases.has(id)||STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)),`${expected.filter(id=>resolverCases.has(id)||STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)).length}/220`);
 
       check('貫通も攻撃側倍率対象',
         damageArithmeticModifiers.toString().includes("outgoingMult") &&
@@ -6400,12 +6543,12 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
         '出目5・6 → 効果③ → 12ダメージ');
       const stagedCases=new Set([...executeStagedEffect.toString().matchAll(/case ['"](C\d{3})['"]/g)].map(m=>m[1]));
       const allExecutable=expected.every(id=>resolverCases.has(id)||stagedCases.has(id));
-      check('C001〜C200 実処理経路',allExecutable,`${expected.filter(id=>resolverCases.has(id)||stagedCases.has(id)).length}/200`);
+      check('C001〜C220 実処理経路',allExecutable,`${expected.filter(id=>resolverCases.has(id)||stagedCases.has(id)).length}/220`);
       check('全カード効果文あり',CARDS.every(c=>Array.isArray(c.effects)&&c.effects.length>=1&&c.effects.every(Boolean)));
       check('図鑑テスト固定サイコロ',rollDie.toString().includes('forcedDieQueue'));
       check('C118 サイコロ→決定効果→処理',selectStageBranch.toString().includes("case 'C118'")&&stageSrc.includes("case 'C118'"),'出目1〜6を3効果へ分岐');
-      check('200枚→ランダム100枚採用',CARDS.length===200 && balancedDeal.toString().includes('.slice(0, 100)'),'各50枚・残り100枚は不採用');
-      check('C111〜C200画像参照',CARDS.slice(110).every(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))),`${CARDS.slice(110).filter(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))).length}/90`);
+      check('220枚→ランダム100枚採用',CARDS.length===220 && balancedDeal.toString().includes('.slice(0, 100)'),'各50枚・残り120枚は不採用');
+      check('C111〜C220画像参照',CARDS.slice(110).every(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))),`${CARDS.slice(110).filter(c=>typeof c.image==='string'&&(/^(data:image\/|asset_|C\d{3}\.(?:jpeg|png)$)/.test(c.image))).length}/110`);
       const damageSrc=computeDamageDetailed.toString();
       check('ダメージ計算 NaN防止',damageSrc.includes('Math.max(0,r1(amount))'));
       check('貫通も攻撃側補正を保持',damageSrc.includes('damageArithmeticModifiers(opts.ignoreOutgoing?null:from,to,piercing)'));
@@ -6419,9 +6562,9 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       check('鬼CPUは相手カードIDを覗かない',!oniOpponentPublicThreat.toString().includes('op.hand.map'));
       check('ダメージ5段階演出',combatFx.toString().includes("n>=50?'fatal':n>=20?'critical':n>=10?'heavy':n>=5?'mid':'small'"));
 
-      check('C111〜C200 新効果経路',
+      check('C111〜C220 新効果経路',
         expected.slice(110).every(id=>resolverCases.has(id)||STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)),
-        `${expected.slice(110).filter(id=>resolverCases.has(id)||STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)).length}/90`);
+        `${expected.slice(110).filter(id=>resolverCases.has(id)||STAGED_MULTI_IDS.has(id)||STAGED_SPECIAL_SINGLE_IDS.has(id)).length}/110`);
       check('C131〜C160 台帳効果列正常',
         CARDS.slice(130).every(c=>(c.effects||[]).every(t=>!/^C\d{3}$/.test(t)&&t!=='完成')),
         'ID/完成フラグを効果文として誤読しない');
@@ -6435,17 +6578,17 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
         drawAndEnterPlay.toString().includes("scheduleCpuAction(cpuPlay"));
       const c109Src=executeStagedEffect.toString();
       const copyable170=expected.every(id=>resolverCases.has(id)||stagedCases.has(id));
-      check('C109コピー完了経路200枚',
+      check('C109コピー完了経路220枚',
         copyable170 && c109Src.includes("case 'C109'") && c109Src.includes('onComplete:()=>withCardSource') &&
         runUnifiedCardSequence.toString().includes('runEffectIndexSequence(side,id,indices,ctx,onComplete,0)'),
-        `${expected.filter(id=>resolverCases.has(id)||stagedCases.has(id)).length}/200枚・完了通知接続`);
+        `${expected.filter(id=>resolverCases.has(id)||stagedCases.has(id)).length}/220枚・完了通知接続`);
       const copyMatrix=copyAuditMatrix();
-      check('200枚コピー耐久マトリクス',copyMatrix.every(x=>x.pass),`${copyMatrix.filter(x=>x.pass).length}/200枚`);
+      check('220枚コピー耐久マトリクス',copyMatrix.every(x=>x.pass),`${copyMatrix.filter(x=>x.pass).length}/220枚`);
       check('コピー循環・深度8で停止',c109Src.includes('game.copyStack.includes(copied)')&&c109Src.includes('game.copyStack.length>=8')&&c109Src.includes('game.copyStack.pop()'));
-      check('行動制御の競合優先順位',TURN_CONTROL_PRIORITY.join('>')==='skipTurns>immobileTurns>alternateImmobile>forceChosenNext>forceAllNext>forceRandomNext>forceHighestNext'&&turnControlState.toString().includes("return 'skipTurns'"));
+      check('行動制御の競合優先順位',TURN_CONTROL_PRIORITY.join('>')==='skipTurns>immobileTurns>alternateImmobile>forceChosenNext>forceAllNext>forceRandomNext>forceHighestNext>forceLowestNext'&&turnControlState.toString().includes("return 'skipTurns'"));
       check('効果予約タイムライン',!!els.effectTimeline&&renderTimeline.toString().includes('timelineEntries'));
       check('ゲーム内用語ヘルプ',!!els.helpDialog&&!!els.battleHelpBtn);
-      check('C141〜C200 CPU専用評価',Array.from({length:60},(_,i)=>`case 'C${141+i}'`).every(s=>cpuCardScore.toString().includes(s)));
+      check('C141〜C220 CPU専用評価',Array.from({length:80},(_,i)=>`case 'C${141+i}'`).every(s=>cpuCardScore.toString().includes(s)));
       check('停止監視・自動復旧・非常ボタン',
         monitorStall.toString().includes('elapsed>=6000') && monitorStall.toString().includes('elapsed>=8000') &&
         forceRecoverStall.toString().includes('completeResolution') && !!els.recoveryBtn,
@@ -6489,6 +6632,13 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       check('C181〜C190 JPEG統一',CARDS.slice(180,190).every(c=>c.image===`${c.id}.jpeg`),'10/10');
       check('C191〜C200 専用処理',Array.from({length:10},(_,i)=>`C${191+i}`).every(id=>STAGED_MULTI_IDS.has(id)&&stageSrc.includes(`case '${id}'`)),'10/10');
       check('C191〜C200 JPEG統一',CARDS.slice(190,200).every(c=>c.image===`${c.id}.jpeg`),'10/10');
+      check('C201〜C220 専用処理',Array.from({length:20},(_,i)=>`C${201+i}`).every(id=>STAGED_MULTI_IDS.has(id)&&stageSrc.includes(`case '${id}'`)),'20/20');
+      check('C201〜C220 JPEG統一',CARDS.slice(200,220).every(c=>c.image===`${c.id}.jpeg`),'20/20');
+      check('C012 改訂・条件分岐',byId.get('C012')?.image==='C012.jpeg'&&selectStageBranch.toString().includes("case 'C012'")&&stageSrc.includes("hit(20,'マジ殴り',true)"));
+      check('C201/C217 反復安全装置',stageSrc.includes('ctx.c201Count<50')&&stageSrc.includes('ctx.c217Count<50'));
+      check('C211/C215 コピー循環防止',stageSrc.includes("copied==='C211'")&&stageSrc.includes("copied==='C215'")&&stageSrc.includes('game.copyStack.length>=8'));
+      check('貫通専用演出',combatFx.toString().includes('piercing-hit-flash'));
+      check('図鑑番号帯フィルター',['range1','range2','range3'].every(f=>!!els.catalogFilters?.querySelector(`[data-catalog-filter="${f}"]`))&&catalogCardMatches(byId.get('C201'),'range3'));
       check('C042 非常口を維持',byId.get('C042')?.name==='非常口'&&stageSrc.includes("case 'C200'"));
       check('C196 永続攻撃・回復倍率',stageSrc.includes("SATSUGAI：与ダメ×1.1")&&stageSrc.includes("甘い恋人：回復量×1.1"));
       check('C197 手札交換選択UI',stageSrc.includes("C197 売れてない屋台")&&stageSrc.includes("selectCardsTap"));
@@ -6668,6 +6818,10 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
   }
   function catalogCardMatches(c,filter=catalogFilter){
     if(filter==='all')return true;
+    const n=Number(String(c.id||'').slice(1));
+    if(filter==='range1')return n>=1&&n<=100;
+    if(filter==='range2')return n>=101&&n<=200;
+    if(filter==='range3')return n>=201&&n<=300;
     if(/^star[1-5]$/.test(filter))return c.rarity===Number(filter.slice(4));
     const text=[c.activation,...(c.effects||[]),c.memo||''].join(' ');
     if(filter==='attack')return /ダメージを与|貫通|自傷ダメージ|ライフを.{0,8}(減ら|半分|同じ数値)/.test(text);
@@ -6714,7 +6868,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     const c=byId.get(id);if(!c)return;
     clearMatchSave(); clearCpuTimers(); resetTransientUi();
     let playerDeck,cpuDeck;[playerDeck,cpuDeck]=balancedDeal(CARDS);
-    const fresh=(deck)=>({life:30,max:30,deck,hand:[],discard:[],active:null,effects:[],newCard:null,lastTurnDamageTaken:0,incomingThisTurn:0,lastCompletedTurnSerial:0,skipTurns:0,healAfterSkip:false,healAtNextActual:false,drawnThisTurn:[],forceHighestNext:false,forceRandomNext:false,forcedRandomId:null,forceAllNext:false,forceAllIdsThisTurn:[],forceChosenNext:null,mirrorRandomNext:false,invertTargetsNext:false,faceUpTop:null,effectActivationsThisTurn:0,extraTurns:0,immobileTurns:0,lastUsedCardId:null,damageDealtThisTurn:0,lastOwnTurnDamageDealt:0});
+    const fresh=(deck)=>({life:30,max:30,deck,hand:[],discard:[],active:null,effects:[],newCard:null,lastTurnDamageTaken:0,incomingThisTurn:0,lastCompletedTurnSerial:0,skipTurns:0,healAfterSkip:false,healAtNextActual:false,drawnThisTurn:[],forceHighestNext:false,forceLowestNext:false,forceRandomNext:false,forcedRandomId:null,forceAllNext:false,forceAllIdsThisTurn:[],forceChosenNext:null,mirrorRandomNext:false,invertTargetsNext:false,faceUpTop:null,effectActivationsThisTurn:0,extraTurns:0,immobileTurns:0,lastUsedCardId:null,damageDealtThisTurn:0,lastOwnTurnDamageDealt:0});
     const ownerByCard={};playerDeck.forEach(x=>ownerByCard[x]='player');cpuDeck.forEach(x=>ownerByCard[x]='cpu');
     // Move selected physical card to player hand regardless of original side.
     for(const deck of [playerDeck,cpuDeck]){const i=deck.indexOf(id);if(i>=0)deck.splice(i,1);}
