@@ -1665,14 +1665,13 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
   let cpuRecoveryTimer = 0;
   let stallWatch={key:'',since:0,autoAttempted:false};
   const STORAGE_SAVE='nine_nine_match_v1';
-  const APP_VERSION='1.20';
+  const APP_VERSION='1.19';
   // ES module の通信処理にも同じアプリ版を共有する。
   window.NINE_NINE_APP_VERSION=APP_VERSION;
   const STORAGE_STATS='nine_nine_stats_v1';
   const STORAGE_AUDIO='nine_nine_audio_v2';
   const STORAGE_UI='nine_nine_ui_v1';
   let audioCtx=null,bgmTimer=0,bgmPreviewTimer=0,bgmStep=0,bgmPreviewMode=false;
-  let bossBgmAudio=null,bossBgmEndedHandler=null;
   const BGM_STYLES={
     home:{name:'NINE NINE・元気なホーム',bpm:132,homeOnly:true},
     casino:{name:'闇カジノ・バトル',bpm:140},
@@ -1680,20 +1679,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     jackpot:{name:'パチンコ・確変バトル',bpm:155},
     wa:{name:'和風ダークバトル',bpm:145},
     orchestra:{name:'最終決戦オーケストラ',bpm:135},
-    boss:{name:'ボスバトル専用BGM',bpm:152,bossOnly:true}
-  };
-  // ボスステージ専用音源。BC004〜BC007は変身しても同じ曲を継続する。
-  const BOSS_BGM_TRACKS={
-    BC001:{src:'BossBattle_001.mp3',loopStart:0,stage:1},
-    BC002:{src:'BossBattle_002.mp3',loopStart:0,stage:2},
-    BC003:{src:'BossBattle_003.wav',loopStart:9,stage:3},
-    BC004:{src:'BossBattle_004-007.wav',loopStart:2,stage:4},
-    BC005:{src:'BossBattle_004-007.wav',loopStart:2,stage:4},
-    BC006:{src:'BossBattle_004-007.wav',loopStart:2,stage:4},
-    BC007:{src:'BossBattle_004-007.wav',loopStart:2,stage:4},
-    BC008:{src:'BossBattle_008.mp3',loopStart:0,stage:5},
-    BC009:{src:'BossBattle_009.mp3',loopStart:0,stage:6},
-    BC010:{src:'BossBattle_010.mp3',loopStart:0,stage:7}
+    boss:{name:'宇宙の帝王・ボスバトル',bpm:152,bossOnly:true}
   };
   let audioSettings={se:true,bgm:true,bgmStyle:'casino',seVolume:100,uiVolume:70,bgmVolume:45,vibration:true,cinematic:true};
   let uiSettings={tempo:'normal'};
@@ -2052,44 +2038,6 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
   }
   function homeScreenActive(){return !!els.startScreen&&!els.startScreen.classList.contains('hidden');}
   function activeBgmStyle(){return homeScreenActive()&&!bgmPreviewMode?'home':game?.mode==='boss'&&!bgmPreviewMode?'boss':(BGM_STYLES[audioSettings.bgmStyle]?audioSettings.bgmStyle:'casino');}
-  function currentBossBgm(){
-    if(game?.mode!=='boss'||bgmPreviewMode)return null;
-    return BOSS_BGM_TRACKS[game.bossId]||null;
-  }
-  function syncBossBgmVolume(){
-    if(bossBgmAudio)bossBgmAudio.volume=Math.max(0,Math.min(1,audioSettings.bgmVolume/100));
-  }
-  function stopBossBgm(){
-    if(!bossBgmAudio)return;
-    if(bossBgmEndedHandler)bossBgmAudio.removeEventListener('ended',bossBgmEndedHandler);
-    bossBgmAudio.pause();
-    try{bossBgmAudio.currentTime=0;}catch(_){ }
-    bossBgmAudio.src='';
-    bossBgmAudio.load();
-    bossBgmAudio=null;
-    bossBgmEndedHandler=null;
-  }
-  function startBossBgm(){
-    const track=currentBossBgm();
-    if(!track)return false;
-    const audio=new Audio(track.src);
-    audio.preload='auto';
-    audio.playsInline=true;
-    audio.loop=track.loopStart<=0;
-    bossBgmAudio=audio;
-    syncBossBgmVolume();
-    if(track.loopStart>0){
-      bossBgmEndedHandler=()=>{
-        if(bossBgmAudio!==audio||!audioSettings.bgm||game?.mode!=='boss')return;
-        const maxStart=Number.isFinite(audio.duration)?Math.max(0,audio.duration-.08):track.loopStart;
-        audio.currentTime=Math.min(track.loopStart,maxStart);
-        audio.play().catch(()=>{});
-      };
-      audio.addEventListener('ended',bossBgmEndedHandler);
-    }
-    audio.play().catch(()=>{});
-    return true;
-  }
   function bgmTick(){
     if((!audioSettings.bgm&&!bgmPreviewMode)||(!game&&!homeScreenActive()&&!bgmPreviewMode))return;
     ensureAudio();if(!audioCtx)return;
@@ -2142,9 +2090,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
   }
   function startBgm(preview=false){
     stopBgm();if(!audioSettings.bgm&&!preview)return;ensureAudio();
-    bgmPreviewMode=preview;
-    if(!preview&&startBossBgm())return;
-    bgmStep=0;bgmTick();
+    bgmPreviewMode=preview;bgmStep=0;bgmTick();
     const style=BGM_STYLES[activeBgmStyle()]||BGM_STYLES.casino;
     bgmTimer=setInterval(bgmTick,Math.round(60000/style.bpm));
     if(preview)bgmPreviewTimer=setTimeout(()=>{if(bgmPreviewMode)stopBgm();},2800);
@@ -2152,7 +2098,6 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
   function stopBgm(){
     if(bgmTimer){clearInterval(bgmTimer);bgmTimer=0;}
     if(bgmPreviewTimer){clearTimeout(bgmPreviewTimer);bgmPreviewTimer=0;}
-    stopBossBgm();
     bgmPreviewMode=false;
   }
   function selectBgmStyle(key,{preview=true}={}){
@@ -2170,7 +2115,6 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     if(els.seVolume){els.seVolume.value=audioSettings.seVolume;els.seVolumeValue.textContent=`${audioSettings.seVolume}%`;}
     if(els.uiVolume){els.uiVolume.value=audioSettings.uiVolume;els.uiVolumeValue.textContent=`${audioSettings.uiVolume}%`;}
     if(els.bgmVolume){els.bgmVolume.value=audioSettings.bgmVolume;els.bgmVolumeValue.textContent=`${audioSettings.bgmVolume}%`;}
-    syncBossBgmVolume();
     for(const grid of [els.bgmStyleGrid,els.battleBgmStyleGrid])grid?.querySelectorAll('[data-bgm-style]').forEach(btn=>{
       const on=btn.dataset.bgmStyle===audioSettings.bgmStyle;btn.classList.toggle('selected',on);btn.setAttribute('aria-pressed',on?'true':'false');
     });
@@ -10702,7 +10646,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
       check('BC003合計8除外抽選',rollBossDice.toString().includes("kind==='bossSumBlock'")&&executeBossEffect.toString().includes("'bossSumBlock'"));
       check('宇宙の帝王4形態',BOSS_CARDS.BC004.stage==='宇宙の帝王'&&BOSS_CARDS.BC007.life===40&&executeBossEffect.toString().includes("transformBossForm(side,'BC007'")&&executeBossEffect.toString().includes("'bossDeathBall'"));
       check('サイコロ全ピップ同寸',paintDieFace.toString().includes("className='die-pip'")&&getComputedStyle(document.documentElement).getPropertyValue('--never-used')==='');
-      check('ボス専用BGM',BGM_STYLES.boss?.bossOnly===true&&BOSS_BGM_TRACKS.BC001?.src==='BossBattle_001.mp3'&&BOSS_BGM_TRACKS.BC003?.loopStart===9&&BOSS_BGM_TRACKS.BC004?.loopStart===2&&BOSS_BGM_TRACKS.BC007?.src===BOSS_BGM_TRACKS.BC004?.src&&BOSS_BGM_TRACKS.BC010?.src==='BossBattle_010.mp3'&&startBgm.toString().includes('startBossBgm'));
+      check('ボス専用BGM',BGM_STYLES.boss?.bossOnly===true&&activeBgmStyle.toString().includes("game?.mode==='boss'")&&bgmTick.toString().includes("style==='boss'"));
       check('変身ホワイトフラッシュ頂点で切替',transformBossForm.toString().includes("boss-transform-flash")&&transformBossForm.toString().includes("},460)")&&transformBossForm.toString().includes("game.bossId=nextId"));
       check('CPU・ボス入口を左右分割',!!els.menuBossBtn&&!!document.querySelector('.battle-menu-split')&&!document.querySelector('.special-mode-card.boss'));
       check('ボスも解除サイコロを振る',runBossTurn.toString().includes("processUnlockChecks('cpu'")&&continueBossTurnAfterUnlock.toString().includes('immobileTurns'));
@@ -11735,7 +11679,7 @@ window.NINE_NINE_CARDS = [{"id":"C001","name":"Mercedes-Benz W222","rarity":3,"r
     appId:"1:252183746828:web:bce5d342c339d2b5805129"
   };
   const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getDatabase(app);
-  const APP_VERSION=String(window.NINE_NINE_APP_VERSION||'1.20');
+  const APP_VERSION=String(window.NINE_NINE_APP_VERSION||'1.19');
   const SESSION_KEY='nine_nine_online_session_v1';
   let user=null,role=null,code=null,playerName='プレイヤー',roomUnsub=null,stateUnsub=null,actionUnsub=null,noticeUnsub=null,fxUnsub=null;
   let guestSeen=false,peerConnected=false,lastStateSeq=0,lastActionSeen=0,lastNoticeSeen=0,lastFxSeen=0,stateSeq=0,fxSeq=0,fxChain=Promise.resolve();
